@@ -1,0 +1,16 @@
+{  
+    "require": {
+        "php": ">=5.4.0",
+    "phpoffice/phpexcel": "^1.0",
+    "curl/curl": "^1.0",
+	"joshcam/mysqli-database-class":"^2.0",
+	"fabpot/goutte":"^3.2",
+        "predis/predis": "^1.1"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}

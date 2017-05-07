@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>测土预约列表</title>
+	<link rel="stylesheet" type="text/css" href="../../dxf/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="../../dxf/css/shCore.css">
+	<link rel="stylesheet" type="text/css" href="../../dxf/css/demo.css">
+	<style type="text/css" class="init">
+	
+	</style>
+	<script type="text/javascript" language="javascript" src="../../dxf/js/jquery-1.12.4.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="../../dxf/js/jquery.dataTables.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="../../dxf/js/shCore.js">
+	</script>
+	<script type="text/javascript" language="javascript" class="init">
+	
+$(document).ready(function() {
+	$('#example').DataTable( {
+		"processing": true,
+		"serverSide": true,
+		"ajax": "ajaxGetAppointmentList",
+		"language": {
+            "lengthMenu": "每页 _MENU_ 条记录",
+            "zeroRecords": "没有找到记录",
+            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
+            "infoEmpty": "无记录",
+            "infoFiltered": "(从 _MAX_ 条记录过滤)",
+        }
+	} );
+	$("#example_filter").append('&nbsp;&nbsp;<a href="output">导出结果</a>');
+	
+} );
+
+
+	</script>
+</head>
+<body class="dt-example">
+	<div class="container">
+		<section>			
+			<div class="demo-html"></div>
+			<table id="example" class="display" cellspacing="0" width="100%">			
+				<thead>
+					<tr>
+						<th>编号</th>
+						<th>手机</th>
+						<th>姓名</th>
+						<th>详细地址</th>
+						<th>提交时间</th>
+						<th>作物/面积</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th>编号</th>
+						<th>手机</th>
+						<th>姓名</th>
+						<th>详细地址</th>
+						<th>提交时间</th>
+						<th>作物/面积</th>
+					</tr>
+				</tfoot>
+			</table>						
+		</section>
+	</div>	
+</body>
+</html>
