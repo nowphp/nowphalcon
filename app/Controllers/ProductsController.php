@@ -88,7 +88,11 @@ ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.
         }
         $ap_model = $this->di->getShared('db');
         $res_data = $ap_model->fetchAll("select * from dm where dm='$dm'");
-        var_dump($res_data);
+        $str = '代码：'.$res_data[0]['dm'];
+        $str .= '名字：'.$res_data[0]['name'];
+        $str .= "<br>f10信息：<br>".$res_data[0]['des'];
+        $str .= "<br>业绩：<br>".$res_data[0]['yj'];
+        echo $str;
     }
     
     static function data_output ( $columns, $data )
