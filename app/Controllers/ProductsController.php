@@ -25,9 +25,20 @@ class ProductsController extends Controller
         $data = $this->request->get();
         $start = isset($data["start"]) && intval($data["start"])>0?intval($data["start"]):0;
         $limit = isset($data["length"]) && intval($data["length"])?intval($data["length"]):10;
+        $column = $data['order'][0]['column'];
+        $dir = $data['order'][0]['dir'];
+        $order = " zdf DESC ";
+        if($column == 2){
+           $order = " c $dir";
+        }
+        if($column == 3){
+            $order = " zdf $dir";
+        }
         $search = isset($data["search"]["value"])?trim($data["search"]["value"]):'';
-        $conditionstr = $search?" name like '$search%' ":'';
-        $conditionstr .= $search?" or dm like '$search%' ":'';
+        $conditionstr = '';
+        $conditionstr .= $search?" tnew.name like '$search%' ":'';
+        $conditionstr .= $search?" or tnew.dm like '$search%' ":'';
+        $conditionstr = $conditionstr?" and ($conditionstr) ":' and 1=1';
         session_start();
         $_SESSION['dxf_conditionstr'] = $conditionstr?:'1=1';
         $ap_model = $this->di->getShared('db');
@@ -43,7 +54,7 @@ data_time='$edate'
 LEFT JOIN ( SELECT * FROM record WHERE 
 data_time='$sdate'
 ) told 
-ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 HAVING  c>1 ORDER BY zdf DESC ) t "
+ON tnew.dm=told.dm WHERE   tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>1 ORDER BY zdf DESC ) t "
             );
         $total = $cont = $arraycont[0]['c'];
         $res_data = $ap_model->fetchAll("SELECT dm,name,c,zdf from (
@@ -54,7 +65,7 @@ data_time='$edate'
 LEFT JOIN ( SELECT * FROM record WHERE 
 data_time='$sdate'
 ) told 
-ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 HAVING  c>1 ORDER BY zdf DESC ) t ".' limit '.$start.','.$limit);
+ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>1 ORDER BY $order ) t ".' limit '.$start.','.$limit);
         $columns = array(
             array( 'db' => 'dm','dt' => 0 ),
             array( 'db' => 'name','dt' => 1 ),
