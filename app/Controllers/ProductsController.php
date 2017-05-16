@@ -54,7 +54,7 @@ data_time='$edate'
 LEFT JOIN ( SELECT * FROM record WHERE 
 data_time='$sdate'
 ) told 
-ON tnew.dm=told.dm WHERE   tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>1 ORDER BY zdf DESC ) t "
+ON tnew.dm=told.dm WHERE   tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>3 ORDER BY zdf DESC ) t "
             );
         $total = $cont = $arraycont[0]['c'];
         $res_data = $ap_model->fetchAll("SELECT dm,name,c,zdf from (
@@ -65,7 +65,7 @@ data_time='$edate'
 LEFT JOIN ( SELECT * FROM record WHERE 
 data_time='$sdate'
 ) told 
-ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>1 ORDER BY $order ) t ".' limit '.$start.','.$limit);
+ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>3 ORDER BY $order ) t ".' limit '.$start.','.$limit);
         $columns = array(
             array( 'db' => 'dm','dt' => 0 ),
             array( 'db' => 'name','dt' => 1 ),
