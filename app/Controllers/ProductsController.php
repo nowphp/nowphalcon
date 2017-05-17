@@ -23,23 +23,29 @@ class ProductsController extends Controller
     //ajax获取预约列表
     public function ajaxGetAppointmentListAction(){
         $data = $this->request->get();
+        session_start();
         $start = isset($data["start"]) && intval($data["start"])>0?intval($data["start"]):0;
         $limit = isset($data["length"]) && intval($data["length"])?intval($data["length"]):10;
         $column = $data['order'][0]['column'];
         $dir = $data['order'][0]['dir'];
-        $order = " zdf DESC ";
+        if(isset($_SESSION['order'])){
+            $order = $_SESSION['order'];
+        }else{
+            $order = " c DESC ";
+        }       
         if($column == 2){
            $order = " c $dir";
         }
         if($column == 3){
             $order = " zdf $dir";
         }
+        $_SESSION['order'] = $order; 
         $search = isset($data["search"]["value"])?trim($data["search"]["value"]):'';
         $conditionstr = '';
         $conditionstr .= $search?" tnew.name like '$search%' ":'';
         $conditionstr .= $search?" or tnew.dm like '$search%' ":'';
         $conditionstr = $conditionstr?" and ($conditionstr) ":' and 1=1';
-        session_start();
+        
         $_SESSION['dxf_conditionstr'] = $conditionstr?:'1=1';
         $ap_model = $this->di->getShared('db');
         $date =  $ap_model->fetchAll("select data_time from record group by data_time order by data_time desc limit 2");
