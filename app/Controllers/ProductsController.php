@@ -51,6 +51,18 @@ class ProductsController extends Controller
         $date =  $ap_model->fetchAll("select data_time from record group by data_time order by data_time desc limit 2");
         $sdate = $date[1]['data_time'];
         $edate = $date[0]['data_time'];
+        $redis = $this->di->getShared('redis');
+        $key = str_replace(' ', '', $start.$limit.$column.$dir.$search);
+        $count_key = $key.'_count';
+        $data_key = $key.'_data';
+        $expire = 300; 
+        $cache_count = $redis->get($count_key);
+        
+        $cache_data = $redis->get($data_key);
+        if($cache_count && $cache_data){
+            $arraycont = unserialize($cache_count);
+            $res_data = unserialize($cache_data);
+        }else{
         $arraycont = $ap_model->fetchAll(
             "SELECT count(1) c from (
 SELECT ((tnew.cje-told.cje)*10)/told.cje c,tnew.dm,tnew.name,tnew.zdf,tnew.data_time FROM 
@@ -62,6 +74,7 @@ data_time='$sdate'
 ) told 
 ON tnew.dm=told.dm WHERE   tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>3 ORDER BY zdf DESC ) t "
             );
+        $redis->setex($count_key,$expire,serialize($arraycont));
         $total = $cont = $arraycont[0]['c'];
         $res_data = $ap_model->fetchAll("SELECT dm,name,c,zdf from (
 SELECT ((tnew.cje-told.cje)*10)/told.cje c,tnew.dm,tnew.name,tnew.zdf,tnew.data_time FROM 
@@ -72,6 +85,10 @@ LEFT JOIN ( SELECT * FROM record WHERE
 data_time='$sdate'
 ) told 
 ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>3 ORDER BY $order ) t ".' limit '.$start.','.$limit);
+        $redis->setex($data_key,$expire,serialize($res_data));
+        }
+        $total = $cont = $arraycont[0]['c'];
+        
         $columns = array(
             array( 'db' => 'dm','dt' => 0 ),
             array( 'db' => 'name','dt' => 1 ),

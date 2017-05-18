@@ -58,4 +58,11 @@ $di->setShared('db', function () {
     );
 });
 
+$di->setShared('redis', function () {
+    return new \Predis\Client([
+            "host"     => "127.0.0.1",           
+            "port"     => "6379",
+        ]);
+});
+
 
