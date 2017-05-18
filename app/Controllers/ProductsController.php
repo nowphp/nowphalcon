@@ -26,8 +26,8 @@ class ProductsController extends Controller
         session_start();
         $start = isset($data["start"]) && intval($data["start"])>0?intval($data["start"]):0;
         $limit = isset($data["length"]) && intval($data["length"])?intval($data["length"]):10;
-        $column = $data['order'][0]['column'];
-        $dir = $data['order'][0]['dir'];
+        $column = isset($data['order'][0]['column'])?$data['order'][0]['column']:'';
+        $dir = isset($data['order'][0]['dir'])?$data['order'][0]['dir']:'';
         if(isset($_SESSION['order'])){
             $order = $_SESSION['order'];
         }else{
