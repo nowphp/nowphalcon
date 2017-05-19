@@ -146,7 +146,7 @@ ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.
                 }
                 if($column['dt'] == 'dm'){
                     $dm = $data[$i][ $column['db'] ];
-                    $row[ $column['dt'] ] = "<a href='detail?dm=$dm' >".$row[ $column['dt'] ]."</a>";
+                    $row[ $column['dt'] ] = "<a href='detail?dm=$dm' target='_blank'>".$row[ $column['dt'] ]."</a>";
                 }
             }
     
