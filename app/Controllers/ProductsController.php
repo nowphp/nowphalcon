@@ -112,7 +112,7 @@ ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.
         $ap_model = $this->di->getShared('db');
         $redis = $this->di->getShared('redis');
         $data_key = $dm.'_data';
-        $expire = 432000; 
+        $expire = 86400; 
         $cache_data = $redis->get($data_key);
         if($cache_data){
           echo $cache_data;
