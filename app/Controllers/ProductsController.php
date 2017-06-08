@@ -92,7 +92,7 @@ class ProductsController extends Controller
     
     public function detailAction(){
         $dm = trim($this->request->get('dm'));
-        $dm = substr($dm,2,6);
+        //$dm = substr($dm,2,6);
         if(!in_array(substr($dm,0,1),array('0','3','6'))){
              exit('error');
         }
