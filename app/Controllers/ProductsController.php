@@ -39,6 +39,9 @@ class ProductsController extends Controller
         if($column == 3){
             $order = " zdf $dir";
         }
+        if($column == 4){
+            $order = " zxj $dir";
+        }
         $_SESSION['order'] = $order; 
         $search = isset($data["search"]["value"])?trim($data["search"]["value"]):'';
         $conditionstr = '';
@@ -76,7 +79,8 @@ class ProductsController extends Controller
             array( 'db' => 'dm','dt' => 0 ),
             array( 'db' => 'name','dt' => 1 ),
             array( 'db' => 'c','dt' => 2 ),
-            array( 'db' => 'zdf','dt' => 3 )
+            array( 'db' => 'zdf','dt' => 3 ),
+            array( 'db' => 'zxj','dt' => 4 )
         );
         $ap_list['data'] = $this->data_output($columns, $res_data);
         $ap_list['data'] = array_values($ap_list['data']);
