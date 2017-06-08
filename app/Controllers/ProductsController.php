@@ -42,15 +42,14 @@ class ProductsController extends Controller
         $_SESSION['order'] = $order; 
         $search = isset($data["search"]["value"])?trim($data["search"]["value"]):'';
         $conditionstr = '';
-        $conditionstr .= $search?" tnew.name like '$search%' ":'';
-        $conditionstr .= $search?" or tnew.dm like '$search%' ":'';
-        $conditionstr = $conditionstr?" and ($conditionstr) ":' and 1=1';
-        
-        $_SESSION['dxf_conditionstr'] = $conditionstr?:'1=1';
+        $conditionstr .= $search?" (name like '$search%' ":'';
+        $conditionstr .= $search?" or dm like '$search%') ":'';
+        $conditionstr .= $conditionstr?" and zdf>0 ":" zdf>0";
+        $conditionstr = $conditionstr?$conditionstr:' and 1=1';
         $ap_model = $this->di->getShared('db');
-        $date =  $ap_model->fetchAll("select data_time from record group by data_time order by data_time desc limit 2");
+        /*$date =  $ap_model->fetchAll("select data_time from record group by data_time order by data_time desc limit 2");
         $sdate = $date[1]['data_time'];
-        $edate = $date[0]['data_time'];
+        $edate = $date[0]['data_time'];*/
         $redis = $this->di->getShared('redis');
         $key = str_replace(' ', '', $start.$limit.$column.$dir.$search);
         $count_key = $key.'_count';
@@ -64,27 +63,11 @@ class ProductsController extends Controller
             $res_data = unserialize($cache_data);
         }else{
         $arraycont = $ap_model->fetchAll(
-            "SELECT count(1) c from (
-SELECT ((tnew.cje-told.cje)*10)/told.cje c,tnew.dm,tnew.name,tnew.zdf,tnew.data_time FROM 
-(SELECT * FROM record WHERE 
-data_time='$edate'
-) tnew
-LEFT JOIN ( SELECT * FROM record WHERE 
-data_time='$sdate'
-) told 
-ON tnew.dm=told.dm WHERE   tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>3 ORDER BY zdf DESC ) t "
+            "SELECT count(1) c from lb where $conditionstr"
             );
         $redis->setex($count_key,$expire,serialize($arraycont));
         $total = $cont = $arraycont[0]['c'];
-        $res_data = $ap_model->fetchAll("SELECT dm,name,c,zdf from (
-SELECT ((tnew.cje-told.cje)*10)/told.cje c,tnew.dm,tnew.name,tnew.zdf,tnew.data_time FROM 
-(SELECT * FROM record WHERE 
-data_time='$edate'
-) tnew
-LEFT JOIN ( SELECT * FROM record WHERE 
-data_time='$sdate'
-) told 
-ON tnew.dm=told.dm WHERE tnew.zdf<9.5 AND told.zdf<9.5 AND told.cje<>0 AND tnew.zdf>0 $conditionstr HAVING  c>3 ORDER BY $order ) t ".' limit '.$start.','.$limit);
+        $res_data = $ap_model->fetchAll("SELECT * from lb where $conditionstr  ORDER BY $order ".' limit '.$start.','.$limit);
         $redis->setex($data_key,$expire,serialize($res_data));
         }
         $total = $cont = $arraycont[0]['c'];
